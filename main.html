@@ -36,32 +36,41 @@
 
 <script>
 //Your code goes here 
-	let data=document.getElementbyclassName("item")
-		card.addEventListener("dragstart", (eventDetails)=>{
-        let cardDragged  = eventDetails.target
-        eventDetails.dataTransfer.setData("text/plain" ,  cardDragged.id)
-        cardDragged.style.opacity = "0.5"
+	
+                      let isDragging = false;
+    let startX, currentX;
 
-    })
+    document.querySelectorAll('.item').forEach(cube => {
+        item.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX - cube.getBoundingClientRect().left;
+            cube.style.cursor = 'grabbing';
+        });
 
-    card.addEventListener("dragend", (eventDetails)=>{
-        let cardDragged  = eventDetails.target
-        cardDragged.style.opacity = 1 // resetting the opacity when drag is complete
-    })
+        item.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                currentX = e.clientX - startX;
+                const containerRect = cube.parentElement.getBoundingClientRect();
+                if (currentX >= 0 && currentX <= containerRect.width - cube.offsetWidth) {
+                    item.style.left = currentX + 'px';
+                }
+            }
+        });
 
-    let dragEvents = ["dragover", "dragenter", "drop"]
-    dragEvents.forEach(dropEvent=>{
-           document.querySelectorAll(".column").forEach(column =>{
-                 column.addEventListener(dropEvent, (eventDetails)=>{
-                      eventDetails.preventDefault()
+        item.addEventListener('mouseup', () => {
+            isDragging = false;
+            cube.style.cursor = 'grab';
+        });
 
-                      if(dropEvent == "drop"){
-                          const cardId = eventDetails.dataTransfer.getData("text/plain")
-                          const card = document.getElementById(cardId)
-                          column.append(card)
-                      }
-                 })
-        
+        item.addEventListener('mouseleave', () => {
+            if (isDragging) {
+                isDragging = false;
+                item.style.cursor = 'grab';
+            }
+        });
+    });
+</script>
     
 </script>
 
